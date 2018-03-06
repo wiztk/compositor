@@ -1,0 +1,11 @@
+/**
+ * @namespace elysium
+ * @brief The root namespace
+ *
+ * ...
+ */
+
+/**
+ * @namespace elysium::server
+ * @brief The server side code.
+ */

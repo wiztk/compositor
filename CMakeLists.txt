@@ -83,5 +83,15 @@ if (WAYLAND_FOUND)
     set(LIBS ${LIBS} ${WAYLAND_SERVER_LIBRARIES} ${WAYLAND_EGL_LIBRARIES})
 endif ()
 
+# Prebuilts setting:
 
+set(PREBUILTS_DIR ${PROJECT_BINARY_DIR}/prebuilts/${CMAKE_SYSTEM_PROCESSOR})
+
+# Wayland protocols
+include_directories(${PREBUILTS_DIR}/wayland-protocols/unstable/xdg-shell)
+link_directories(${PREBUILTS_DIR}/wayland-protocols/unstable/xdg-shell)
+
+add_subdirectory(docs)
 add_subdirectory(src)
+
+message(STATUS "IMPORTANT: checkout 'https://github.com/wiztk/prebuilts.git' to ${PROJECT_BINARY_DIR}/prebuilts.")

@@ -14,23 +14,28 @@
  * limitations under the License.
  */
 
-/**
- * @file main.cpp
- * @brief The source file contains the main function.
- */
+#include <stdexcept>
+#include "window-manager.hpp"
 
-#include "elysium/server/window-manager.hpp"
+namespace elysium {
+namespace server {
 
-using namespace elysium;
+WindowManager *WindowManager::kInstance = nullptr;
 
-/**
- * @brief The main function.
- * @param argc
- * @param argv
- * @return
- */
-int main(int argc, char *argv[]) {
-  server::WindowManager window_manager(argc, argv);
+WindowManager::WindowManager(int argc, char **argv) {
+  if (nullptr != kInstance)
+    throw std::runtime_error("Error! There should be only one window manager instance!");
 
-  return window_manager.Run();
+  kInstance = this;
+}
+
+WindowManager::~WindowManager() {
+
+}
+
+int WindowManager::Run() {
+  return 0;
+}
+
+}
 }

@@ -14,18 +14,50 @@
  * limitations under the License.
  */
 
+#include <cstdio>
 #include "display.hpp"
+
+#include "compositor.hpp"
+#include "shell.hpp"
+#include "xdg-shell.hpp"
+#include "seat.hpp"
 
 namespace elysium {
 namespace server {
 
 Display::Display() {
   wl_display_ = wl_display_create();
+  wl_display_add_socket_auto(wl_display_);
+
+  wl_event_loop_ = wl_display_get_event_loop(wl_display_);
+
+  fd_ = wl_event_loop_get_fd(wl_event_loop_);
+
+  compositor_ = Compositor::Create<Compositor>(this);
+  shell_ = Shell::Create<Shell>(this);
+  xdg_shell_ = XdgShell::Create<XdgShell>(this);
+  seat_ = Seat::Create<Seat>(this);
+
+  wl_display_init_shm(wl_display_);
 }
 
 Display::~Display() {
-  if (nullptr != wl_display_)
+  seat_.reset();
+  xdg_shell_.reset();
+  shell_.reset();
+  compositor_.reset();
+
+  if (nullptr != wl_display_) {
+    wl_event_loop_destroy(wl_event_loop_);
     wl_display_destroy(wl_display_);
+  }
+}
+
+void Display::Destroy() {
+  if (nullptr != wl_display_) {
+    wl_display_destroy(wl_display_);
+    wl_display_ = nullptr;
+  }
 }
 
 }

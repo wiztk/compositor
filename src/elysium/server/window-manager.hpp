@@ -14,23 +14,33 @@
  * limitations under the License.
  */
 
-/**
- * @file main.cpp
- * @brief The source file contains the main function.
- */
+#ifndef ELYSIUM_SERVER_WINDOW_MANAGER_HPP_
+#define ELYSIUM_SERVER_WINDOW_MANAGER_HPP_
 
-#include "elysium/server/window-manager.hpp"
+namespace elysium {
+namespace server {
 
-using namespace elysium;
+class WindowManager {
 
-/**
- * @brief The main function.
- * @param argc
- * @param argv
- * @return
- */
-int main(int argc, char *argv[]) {
-  server::WindowManager window_manager(argc, argv);
+ public:
 
-  return window_manager.Run();
+  WindowManager() = delete;
+
+ public:
+
+  WindowManager(int argc, char *argv[]);
+
+  ~WindowManager();
+
+  int Run();
+
+ private:
+
+  static WindowManager *kInstance;
+
+};
+
 }
+}
+
+#endif // ELYSIUM_SERVER_WINDOW_MANAGER_HPP_

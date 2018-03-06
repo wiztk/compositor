@@ -14,23 +14,29 @@
  * limitations under the License.
  */
 
-/**
- * @file main.cpp
- * @brief The source file contains the main function.
- */
+#include "abstract-global.hpp"
+#include "display.hpp"
 
-#include "elysium/server/window-manager.hpp"
+namespace elysium {
+namespace server {
 
-using namespace elysium;
+AbstractGlobal::~AbstractGlobal() {
+  if (nullptr != wl_global_)
+    wl_global_destroy(wl_global_);
+}
 
-/**
- * @brief The main function.
- * @param argc
- * @param argv
- * @return
- */
-int main(int argc, char *argv[]) {
-  server::WindowManager window_manager(argc, argv);
+void AbstractGlobal::Setup(Display *display) {
+  Destroy();
 
-  return window_manager.Run();
+  wl_global_ = OnSetup(display->wl_display_);
+}
+
+void AbstractGlobal::Destroy() {
+  if (nullptr != wl_global_) {
+    wl_global_destroy(wl_global_);
+    wl_global_ = nullptr;
+  }
+}
+
+}
 }

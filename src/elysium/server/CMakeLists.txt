@@ -14,8 +14,31 @@
 
 set(
         server_sources
+        abstract-global.cpp
+        abstract-global.hpp
         display.cpp
         display.hpp
+        main-loop.cpp
+        main-loop.hpp
+        compositor.cpp
+        compositor.hpp
+        window-manager.cpp
+        window-manager.hpp
+        xdg-surface.cpp
+        xdg-surface.hpp
+        xdg-shell.cpp
+        xdg-shell.hpp
+        shell.cpp
+        shell.hpp
+        seat.cpp
+        seat.hpp
 )
 
 add_library(elysium-server ${server_sources})
+
+target_link_libraries(
+        elysium-server
+        PRIVATE xdg-shell-unstable-v6
+        PRIVATE wiztk-base
+        PRIVATE wiztk-async
+)

@@ -14,23 +14,18 @@
  * limitations under the License.
  */
 
-/**
- * @file main.cpp
- * @brief The source file contains the main function.
- */
+#include "main-loop.hpp"
+#include "display.hpp"
 
-#include "elysium/server/window-manager.hpp"
+namespace elysium {
+namespace server {
 
-using namespace elysium;
+void MainLoop::DispatchMessage() {
+  wiztk::async::EventLoop::DispatchMessage();
 
-/**
- * @brief The main function.
- * @param argc
- * @param argv
- * @return
- */
-int main(int argc, char *argv[]) {
-  server::WindowManager window_manager(argc, argv);
+  wl_event_loop_dispatch(display_->wl_event_loop_, 0);
+  wl_display_flush_clients(display_->wl_display_);
+}
 
-  return window_manager.Run();
+}
 }

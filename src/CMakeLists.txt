@@ -26,5 +26,8 @@ add_executable(elysium ${all_sources})
 target_link_libraries(
         elysium
         PUBLIC ${WAYLAND_SERVER_LIBRARIES}
+        PUBLIC pthread
         PRIVATE elysium-server
+        PRIVATE wiztk-base
+        PRIVATE wiztk-async
 )
