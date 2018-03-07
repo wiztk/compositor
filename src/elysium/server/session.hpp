@@ -14,29 +14,39 @@
  * limitations under the License.
  */
 
-#ifndef ELYSIUM_SERVER_WINDOW_MANAGER_HPP_
-#define ELYSIUM_SERVER_WINDOW_MANAGER_HPP_
+#ifndef ELYSIUM_SERVER_SESSION_HPP_
+#define ELYSIUM_SERVER_SESSION_HPP_
 
 namespace elysium {
 namespace server {
 
-class WindowManager {
+class Display;
+
+class Session {
 
  public:
 
-  WindowManager() = delete;
+  Session() = delete;
 
  public:
 
-  WindowManager(int argc, char *argv[]);
+  static Session *GetInstance();
 
-  ~WindowManager();
+  Session(int argc, char *argv[]);
+
+  ~Session();
 
   int Run();
 
+  Display *GetDisplay() const {
+    return display_;
+  }
+
  private:
 
-  static WindowManager *kInstance;
+  Display *display_ = nullptr;
+
+  static Session *kInstance;
 
 };
 

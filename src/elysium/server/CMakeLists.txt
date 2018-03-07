@@ -22,8 +22,8 @@ set(
         main-loop.hpp
         compositor.cpp
         compositor.hpp
-        window-manager.cpp
-        window-manager.hpp
+        session.cpp
+        session.hpp
         xdg-surface.cpp
         xdg-surface.hpp
         xdg-shell.cpp
@@ -32,6 +32,12 @@ set(
         shell.hpp
         seat.cpp
         seat.hpp
+        client.cpp
+        client.hpp
+        client-list.cpp
+        client-list.hpp
+        surface-list.cpp
+        surface-list.hpp
 )
 
 add_library(elysium-server ${server_sources})

@@ -29,12 +29,16 @@ class Shell;
 class XdgShell;
 class Seat;
 
+class ClientList;
+class SurfaceList;
+
 /**
  * @ingroup elysium_server
  * @brief The server-side display.
  */
 class Display {
 
+  friend class Session;
   friend class MainLoop;
   friend class Compositor;
   friend class XdgShell;
@@ -54,17 +58,15 @@ class Display {
     wl_display_flush_clients(wl_display_);
   }
 
-  /**
-   * @brief Destroy and reset the native wayland display object.
-   *
-   * This function emits the wl_display destroy signal, releases all the sockets
-   * added to this display, free's all the globals associated with this display,
-   * free's memory of additional shared memory formats and destroy the display
-   * object.
-   */
-  void Destroy();
-
   int fd() const { return fd_; }
+
+  ClientList *GetClientList() const {
+    return client_manager_.get();
+  }
+
+  SurfaceList *GetSurfaces() const {
+    return surface_manager_.get();
+  }
 
  private:
 
@@ -76,6 +78,9 @@ class Display {
   std::unique_ptr<Shell> shell_;
   std::unique_ptr<XdgShell> xdg_shell_;
   std::unique_ptr<Seat> seat_;
+
+  std::unique_ptr<ClientList> client_manager_;
+  std::unique_ptr<SurfaceList> surface_manager_;
 
   int fd_ = -1;
 

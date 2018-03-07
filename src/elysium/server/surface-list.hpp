@@ -14,23 +14,29 @@
  * limitations under the License.
  */
 
-/**
- * @file main.cpp
- * @brief The source file contains the main function.
- */
+#ifndef WIZTK_ELYSIUM_SERVER_SURFACE_LIST_HPP_
+#define WIZTK_ELYSIUM_SERVER_SURFACE_LIST_HPP_
 
-#include "elysium/server/session.hpp"
+#include <wayland-server.h>
 
-using namespace elysium;
+namespace elysium {
+namespace server {
 
-/**
- * @brief The main function.
- * @param argc
- * @param argv
- * @return
- */
-int main(int argc, char *argv[]) {
-  server::Session session(argc, argv);
+class SurfaceList {
 
-  return session.Run();
+ public:
+
+  SurfaceList();
+
+  ~SurfaceList();
+
+ private:
+
+  struct wl_list surfaces_;
+
+};
+
 }
+}
+
+#endif // WIZTK_ELYSIUM_SERVER_SURFACE_LIST_HPP_

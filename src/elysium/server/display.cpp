@@ -22,16 +22,25 @@
 #include "xdg-shell.hpp"
 #include "seat.hpp"
 
+#include "client-list.hpp"
+#include "surface-list.hpp"
+
 namespace elysium {
 namespace server {
 
 Display::Display() {
   wl_display_ = wl_display_create();
+  if (nullptr == wl_display_)
+    throw std::runtime_error("Error! Cannot create Wayland display object!");
+
   wl_display_add_socket_auto(wl_display_);
 
   wl_event_loop_ = wl_display_get_event_loop(wl_display_);
 
   fd_ = wl_event_loop_get_fd(wl_event_loop_);
+
+  client_manager_ = std::make_unique<ClientList>();
+  surface_manager_ = std::make_unique<SurfaceList>();
 
   compositor_ = Compositor::Create<Compositor>(this);
   shell_ = Shell::Create<Shell>(this);
@@ -42,22 +51,23 @@ Display::Display() {
 }
 
 Display::~Display() {
+  surface_manager_.reset();
+  client_manager_.reset();
+
   seat_.reset();
   xdg_shell_.reset();
   shell_.reset();
   compositor_.reset();
 
-  if (nullptr != wl_display_) {
-    wl_event_loop_destroy(wl_event_loop_);
-    wl_display_destroy(wl_display_);
-  }
-}
+  wl_event_loop_destroy(wl_event_loop_);
 
-void Display::Destroy() {
-  if (nullptr != wl_display_) {
-    wl_display_destroy(wl_display_);
-    wl_display_ = nullptr;
-  }
+  /*
+  * This function emits the wl_display destroy signal, releases all the sockets
+  * added to this display, free's all the globals associated with this display,
+  * free's memory of additional shared memory formats and destroy the display
+  * object.
+  */
+  wl_display_destroy(wl_display_);
 }
 
 }

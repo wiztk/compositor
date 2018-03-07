@@ -14,28 +14,10 @@
  * limitations under the License.
  */
 
-#include <stdexcept>
-#include "window-manager.hpp"
+#include "client.hpp"
 
 namespace elysium {
 namespace server {
-
-WindowManager *WindowManager::kInstance = nullptr;
-
-WindowManager::WindowManager(int argc, char **argv) {
-  if (nullptr != kInstance)
-    throw std::runtime_error("Error! There should be only one window manager instance!");
-
-  kInstance = this;
-}
-
-WindowManager::~WindowManager() {
-
-}
-
-int WindowManager::Run() {
-  return 0;
-}
 
 }
 }

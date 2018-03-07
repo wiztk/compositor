@@ -14,23 +14,18 @@
  * limitations under the License.
  */
 
-/**
- * @file main.cpp
- * @brief The source file contains the main function.
- */
+#include "surface-list.hpp"
 
-#include "elysium/server/session.hpp"
+namespace elysium {
+namespace server {
 
-using namespace elysium;
+SurfaceList::SurfaceList() {
+  wl_list_init(&surfaces_);
+}
 
-/**
- * @brief The main function.
- * @param argc
- * @param argv
- * @return
- */
-int main(int argc, char *argv[]) {
-  server::Session session(argc, argv);
+SurfaceList::~SurfaceList() {
+  // TODO: clean up
+}
 
-  return session.Run();
+}
 }

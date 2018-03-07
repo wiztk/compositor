@@ -14,23 +14,33 @@
  * limitations under the License.
  */
 
-/**
- * @file main.cpp
- * @brief The source file contains the main function.
- */
+#ifndef ELYSIUM_SERVER_CLIENT_LIST_HPP_
+#define ELYSIUM_SERVER_CLIENT_LIST_HPP_
 
-#include "elysium/server/session.hpp"
+#include <wayland-server.h>
 
-using namespace elysium;
+namespace elysium {
+namespace server {
 
-/**
- * @brief The main function.
- * @param argc
- * @param argv
- * @return
- */
-int main(int argc, char *argv[]) {
-  server::Session session(argc, argv);
+class Client;
 
-  return session.Run();
+class ClientList {
+
+ public:
+
+  static Client *GetClient(struct wl_client *client);
+
+  ClientList();
+
+  ~ClientList();
+
+ private:
+
+  struct wl_list clients_;
+
+};
+
 }
+}
+
+#endif // ELYSIUM_SERVER_CLIENT_LIST_HPP_
