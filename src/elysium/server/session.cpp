@@ -15,6 +15,8 @@
  */
 
 #include <stdexcept>
+#include <sys/stat.h>
+#include <unistd.h>
 
 #include "session.hpp"
 
@@ -35,29 +37,46 @@ Session::Session(int argc, char **argv) {
 
   kInstance = this;
 
+  try {
+    runtime_dir_ = GetRuntimeDir();
+  } catch (const std::runtime_error &err) {
+    throw err;
+  }
+
   display_ = new Display;
+
+  main_loop_ = MainLoop::Initialize(display_);
 }
 
 Session::~Session() {
+  delete main_loop_;
   delete display_;
 }
 
 int Session::Run() {
-  while (true) {
-    wl_event_loop_dispatch (display_->wl_event_loop_, 0);
-//    backend_dispatch_nonblocking ();
-    wl_display_flush_clients (display_->wl_display_);
-//    if (redraw_needed) {
-//      draw ();
-//      redraw_needed = 0;
-//    }
-//    else {
-//      backend_wait_for_events (wayland_fd);
-//    }
-  }
+//  main_loop_->Run();
+  display_->Run();
 
   return 0;
 }
 
+std::string Session::GetRuntimeDir() {
+  char *dir = getenv("XDG_RUNTIME_DIR");
+  if (nullptr == dir)
+    throw std::runtime_error("Fatal! Environment variable XDG_RUNTIME_DIR is not set!");
+
+  struct stat s;
+
+  if (stat(dir, &s) || (!S_ISDIR(s.st_mode))) {
+    throw std::runtime_error("Fatal! XDG_RUNTIME_DIR is not a directory!");
+  }
+
+  if ((s.st_mode & 0777) != 0700 || s.st_uid != getuid()) {
+    throw std::runtime_error("Fatal! No permission to use XDG_RUNTIME_DIR!");
+  }
+
+  return std::string(dir);
 }
-}
+
+}  // namespace server
+}  // namespace elysium

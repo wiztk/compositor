@@ -85,13 +85,19 @@ endif ()
 
 # Prebuilts setting:
 
-set(PREBUILTS_DIR ${PROJECT_BINARY_DIR}/prebuilts/${CMAKE_SYSTEM_PROCESSOR})
+set(PREBUILTS_DIR ${CMAKE_BINARY_DIR}/prebuilts/${CMAKE_SYSTEM_PROCESSOR})
 
 # Wayland protocols
 include_directories(${PREBUILTS_DIR}/wayland-protocols/unstable/xdg-shell)
 link_directories(${PREBUILTS_DIR}/wayland-protocols/unstable/xdg-shell)
 
+include_directories(
+        ${PROJECT_SOURCE_DIR}/deps/framework/include
+        ${PROJECT_BINARY_DIR}/deps/framework/include
+)
+
+add_subdirectory(deps/framework)
 add_subdirectory(docs)
 add_subdirectory(src)
 
-message(STATUS "IMPORTANT: checkout 'https://github.com/wiztk/prebuilts.git' to ${PROJECT_BINARY_DIR}/prebuilts.")
+message(STATUS "IMPORTANT: checkout 'https://github.com/wiztk/prebuilts.git' to ${CMAKE_BINARY_DIR}/prebuilts.")

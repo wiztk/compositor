@@ -40,8 +40,6 @@ class Display {
 
   friend class Session;
   friend class MainLoop;
-  friend class Compositor;
-  friend class XdgShell;
   friend class AbstractGlobal;
 
  public:
@@ -50,39 +48,35 @@ class Display {
 
   ~Display();
 
-  void Run() {
-    wl_display_run(wl_display_);
-  }
+  void Run();
 
   void FlushClients() {
     wl_display_flush_clients(wl_display_);
   }
 
-  int fd() const { return fd_; }
-
   ClientList *GetClientList() const {
-    return client_manager_.get();
+    return clients_.get();
   }
 
   SurfaceList *GetSurfaces() const {
-    return surface_manager_.get();
+    return surfaces_.get();
   }
 
  private:
 
   struct wl_display *wl_display_ = nullptr;
 
-  struct wl_event_loop *wl_event_loop_ = nullptr;
+//  struct wl_event_loop *wl_event_loop_ = nullptr;
 
   std::unique_ptr<Compositor> compositor_;
   std::unique_ptr<Shell> shell_;
   std::unique_ptr<XdgShell> xdg_shell_;
   std::unique_ptr<Seat> seat_;
 
-  std::unique_ptr<ClientList> client_manager_;
-  std::unique_ptr<SurfaceList> surface_manager_;
+  std::unique_ptr<ClientList> clients_;
+  std::unique_ptr<SurfaceList> surfaces_;
 
-  int fd_ = -1;
+//  int fd_ = -1;
 
 };
 

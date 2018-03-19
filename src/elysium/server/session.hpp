@@ -17,40 +17,72 @@
 #ifndef ELYSIUM_SERVER_SESSION_HPP_
 #define ELYSIUM_SERVER_SESSION_HPP_
 
+#include "main-loop.hpp"
+
 namespace elysium {
 namespace server {
 
 class Display;
 
+/**
+ * @ingroup elysium_server
+ * @brief A session represents a singleton wayland server instance.
+ */
 class Session {
 
  public:
 
+  /**
+   * @brief Disable the defautl constructor
+   */
   Session() = delete;
 
  public:
 
+  /**
+   * @brief Get the instance of a session.
+   */
   static Session *GetInstance();
 
+  /**
+   * @brief Constructor to create a Session and register it as the singleton
+   * instance.
+   */
   Session(int argc, char *argv[]);
 
+  /**
+   * @brief Destructor.
+   */
   ~Session();
 
   int Run();
 
+  /**
+   * @brief Get the server-side display object.
+   */
   Display *GetDisplay() const {
     return display_;
   }
 
+  const std::string &runtime_dir() const {
+    return runtime_dir_;
+  }
+
  private:
 
+  static std::string GetRuntimeDir();
+
   Display *display_ = nullptr;
+
+  MainLoop *main_loop_ = nullptr;
+
+  std::string runtime_dir_;
 
   static Session *kInstance;
 
 };
 
-}
-}
+}  // namespace server
+}  // namespace elysium
 
-#endif // ELYSIUM_SERVER_WINDOW_MANAGER_HPP_
+#endif // ELYSIUM_SERVER_SESSION_HPP_

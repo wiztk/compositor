@@ -49,7 +49,7 @@ class Compositor : public AbstractGlobal {
 
   static void CreateRegion(struct wl_client *client, struct wl_resource *resource, uint32_t id);
 
-  static struct wl_compositor_interface kInterface;
+  static const struct wl_compositor_interface kInterface;
 
 };
 

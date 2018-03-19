@@ -28,6 +28,8 @@ struct wl_global *Shell::OnSetup(struct wl_display *display) {
 }
 
 void Shell::Bind(struct wl_client *client, void *data, uint32_t version, uint32_t id) {
+  printf("%s\n", __FUNCTION__);
+
   struct wl_resource *resource = wl_resource_create(client, &wl_shell_interface, 1, id);
   wl_resource_set_implementation(resource, &kInstance, data, nullptr);
 }

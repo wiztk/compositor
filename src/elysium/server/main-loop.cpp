@@ -17,14 +17,47 @@
 #include "main-loop.hpp"
 #include "display.hpp"
 
+#include "session.hpp"
+
 namespace elysium {
 namespace server {
+
+MainLoop *MainLoop::Initialize(Display *display) {
+  MainLoop *main_loop = nullptr;
+  try {
+    main_loop = static_cast<MainLoop *>(Create([&]() -> wiztk::async::EventLoop * {
+      return new MainLoop(display);
+    }));
+  } catch (const std::runtime_error &err) {
+    throw err;
+  }
+
+  main_loop->wl_event_loop_ = wl_display_get_event_loop(display->wl_display_);
+  main_loop->fd_ = wl_event_loop_get_fd(main_loop->wl_event_loop_);
+
+//  main_loop->WatchFileDescriptor(main_loop->fd_,
+//                                 &main_loop->display_event_,
+//                                 EPOLLIN | EPOLLOUT | EPOLLERR | EPOLLHUP);
+
+  return main_loop;
+}
+
+MainLoop::~MainLoop() {
+  wl_event_loop_destroy(wl_event_loop_);
+}
 
 void MainLoop::DispatchMessage() {
   wiztk::async::EventLoop::DispatchMessage();
 
-  wl_event_loop_dispatch(display_->wl_event_loop_, 0);
+  wl_event_loop_dispatch(wl_event_loop_, 0);
   wl_display_flush_clients(display_->wl_display_);
+}
+
+// ----
+
+void MainLoop::DisplayEvent::Run(uint32_t events) {
+  printf("%s\n", __FUNCTION__);
+
 }
 
 }

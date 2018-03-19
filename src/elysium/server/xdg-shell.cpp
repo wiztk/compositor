@@ -32,6 +32,8 @@ struct wl_global *XdgShell::OnSetup(struct wl_display *display) {
 }
 
 void XdgShell::Bind(struct wl_client *client, void *data, uint32_t version, uint32_t id) {
+  printf("%s\n", __FUNCTION__);
+
   struct wl_resource *resource = wl_resource_create(client, &zxdg_shell_v6_interface, 1, id);
   wl_resource_set_implementation(resource, &kInterface, data, nullptr);
 }

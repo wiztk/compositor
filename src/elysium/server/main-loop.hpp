@@ -19,6 +19,8 @@
 
 #include "wiztk/async/event-loop.hpp"
 
+#include <wayland-server.h>
+
 namespace elysium {
 namespace server {
 
@@ -28,18 +30,43 @@ class MainLoop : public wiztk::async::EventLoop {
 
  public:
 
-  MainLoop(Display *display)
-      : display_(display) {}
+  static MainLoop *Initialize(Display *display);
 
-  ~MainLoop() final = default;
+  ~MainLoop() final;
 
  protected:
 
-  void DispatchMessage() override;
+  explicit MainLoop(Display *display)
+      : display_(display), display_event_(this) {}
+
+  void DispatchMessage() final;
 
  private:
 
+  class DisplayEvent : public wiztk::async::AbstractEvent {
+
+   public:
+
+    explicit DisplayEvent(MainLoop *mainloop)
+        : main_loop(mainloop) {}
+
+    ~DisplayEvent() final = default;
+
+   protected:
+
+    void Run(uint32_t events) final;
+
+   private:
+    MainLoop *main_loop = nullptr;
+  };
+
   Display *display_ = nullptr;
+
+  struct wl_event_loop *wl_event_loop_ = nullptr;
+
+  int fd_ = -1;
+
+  DisplayEvent display_event_;
 
 };
 

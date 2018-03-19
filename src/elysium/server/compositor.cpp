@@ -16,12 +16,10 @@
 
 #include "compositor.hpp"
 
-#include "display.hpp"
-
 namespace elysium {
 namespace server {
 
-struct wl_compositor_interface Compositor::kInterface = {
+const struct wl_compositor_interface Compositor::kInterface = {
     &Compositor::CreateSurface,
     &Compositor::CreateRegion
 };
@@ -29,23 +27,31 @@ struct wl_compositor_interface Compositor::kInterface = {
 struct wl_global *Compositor::OnSetup(struct wl_display *display) {
   return wl_global_create(display,
                           &wl_compositor_interface,
-                          3,
+                          4,
                           this,
                           &Compositor::Bind);
 }
 
 void Compositor::Bind(struct wl_client *client, void *data, uint32_t version, uint32_t id) {
-  struct wl_resource *resource = wl_resource_create(client, &wl_compositor_interface, 1, id);
+  printf("%s\n", __FUNCTION__);
+  struct wl_resource *resource = wl_resource_create(client, &wl_compositor_interface, version, id);
+  if (nullptr == resource) {
+    wl_client_post_no_memory(client);
+    return;
+  }
+
   wl_resource_set_implementation(resource, &kInterface, data, nullptr);
 }
 
 void Compositor::CreateSurface(struct wl_client *client, struct wl_resource *resource, uint32_t id) {
+  printf("%s\n", __FUNCTION__);
 
 }
 
 void Compositor::CreateRegion(struct wl_client *client, struct wl_resource *resource, uint32_t id) {
+  printf("%s\n", __FUNCTION__);
 
 }
 
-}
-}
+} // namespace server
+} // namespace elysium

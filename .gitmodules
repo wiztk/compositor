@@ -1,0 +1,3 @@
+[submodule "deps/framework"]
+	path = deps/framework
+	url = https://github.com/wiztk/framework.git

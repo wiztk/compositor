@@ -33,14 +33,16 @@ Display::Display() {
   if (nullptr == wl_display_)
     throw std::runtime_error("Error! Cannot create Wayland display object!");
 
-  wl_display_add_socket_auto(wl_display_);
+  const char *name = wl_display_add_socket_auto(wl_display_);
+  // This returns a string like "wayland-0", "wayland-1" ..., same as the value
+  // of environment variable 'WAYLAND_DISPLAY'.
 
-  wl_event_loop_ = wl_display_get_event_loop(wl_display_);
+//  wl_event_loop_ = wl_display_get_event_loop(wl_display_);
+//
+//  fd_ = wl_event_loop_get_fd(wl_event_loop_);
 
-  fd_ = wl_event_loop_get_fd(wl_event_loop_);
-
-  client_manager_ = std::make_unique<ClientList>();
-  surface_manager_ = std::make_unique<SurfaceList>();
+  clients_ = std::make_unique<ClientList>();
+  surfaces_ = std::make_unique<SurfaceList>();
 
   compositor_ = Compositor::Create<Compositor>(this);
   shell_ = Shell::Create<Shell>(this);
@@ -51,15 +53,15 @@ Display::Display() {
 }
 
 Display::~Display() {
-  surface_manager_.reset();
-  client_manager_.reset();
+  surfaces_.reset();
+  clients_.reset();
 
   seat_.reset();
   xdg_shell_.reset();
   shell_.reset();
   compositor_.reset();
 
-  wl_event_loop_destroy(wl_event_loop_);
+//  wl_event_loop_destroy(wl_event_loop_);
 
   /*
   * This function emits the wl_display destroy signal, releases all the sockets
@@ -68,6 +70,10 @@ Display::~Display() {
   * object.
   */
   wl_display_destroy(wl_display_);
+}
+
+void Display::Run() {
+  wl_display_run(wl_display_);
 }
 
 }
